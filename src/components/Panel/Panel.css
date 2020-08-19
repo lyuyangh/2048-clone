@@ -1,0 +1,9 @@
+.panel {
+    margin-bottom: 5px;
+    font-size: xx-large;
+    display: flex;
+}
+
+.reset-button {
+    margin-left: 20px;
+}
