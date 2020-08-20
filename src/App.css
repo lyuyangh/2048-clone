@@ -4,4 +4,10 @@
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  animation: appear 1s both;
+}
+
+@keyframes appear {
+  from { opacity: 0;}
+  to { opacity: 1; }
 }

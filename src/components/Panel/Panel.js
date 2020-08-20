@@ -1,7 +1,7 @@
 import React from 'react';
 import './Panel.css';
 
-export default function Panel({ score, bestScore, isGameOver, onResetClick }) {
+export default function Panel({ score, bestScore, isGameOver, onResetClick, pointsForMove }) {
     let resetBtn = (
         <div className="reset-button" onClick={onResetClick}>New Game</div>
     )
@@ -14,6 +14,7 @@ export default function Panel({ score, bestScore, isGameOver, onResetClick }) {
             </div>
         )
     }
+
     return (
         <div className="panel">
             <div className="title">2048</div>
@@ -21,6 +22,11 @@ export default function Panel({ score, bestScore, isGameOver, onResetClick }) {
                 <div className="score">
                     <span>SCORE</span>
                     <span className="number">{score}</span>
+                    {
+                        pointsForMove 
+                        ? <span key={score} className="additional-points">{`+${pointsForMove}`}</span>
+                        : null
+                    }
                 </div>
                 <div className="score">
                     <span>BEST</span>

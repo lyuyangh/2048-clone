@@ -9,6 +9,7 @@
     color: #492e08;
 }
 
+/* Scores */
 .scores-container {
     display: flex;
 }
@@ -29,12 +30,27 @@
     font-size: 35px;
 }
 
+.additional-points {
+    color: #492e08;
+    position: relative;
+    font-size: 25px;
+    font-weight: 600;
+    animation: move-up 1.4s both;
+}
+
+@keyframes move-up {
+    0% { top: -25px; }
+    100% { top: -84px; opacity: 0; }
+}
+
+/* Rules */
 .game-rule {
     margin-top: 10px;
     margin-left: 5px;
     width: 350px;
 }
 
+/* Reset Button */
 .reset-button {
     position: relative;
     top: 90px;
@@ -51,6 +67,7 @@
 
 .reset-button:hover {
     cursor: pointer;
+    background-color: #88afe2;
 }
 
 .game-over {

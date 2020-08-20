@@ -15,6 +15,7 @@ export default function App() {
   const [gameState, setGameState] = useLocalStorage('gameState', generateInitialGame(BOARD_DIM));
   const [score, setScore] = useLocalStorage('score', 0);
   const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
+  const [pointsForMove, setPointsForMove] = useState(0);
 
   function handleKeyUp(e) {
     switch (e.keyCode) {
@@ -34,6 +35,7 @@ export default function App() {
   function moveLeft() {
     const newGameState = gameState.slice();
     let isValid = false;
+    let pointsForMove = 0;
     for (let rowIdx = 0; rowIdx < BOARD_DIM; rowIdx++) {
       let newIdx = 0;
       for (let colIdx = 0; colIdx < BOARD_DIM; colIdx++) {
@@ -42,7 +44,7 @@ export default function App() {
           if (newIdx > 0 && newGameState[rowIdx][newIdx - 1] === val) { // merge
             newIdx--;
             val += val;
-            setScore(score + val);
+            pointsForMove += val;
           }
           newGameState[rowIdx][newIdx] = val;
           if (newIdx !== colIdx) {
@@ -54,14 +56,16 @@ export default function App() {
       }
     }
     if (isValid) {
+      setPointsForMove(pointsForMove);
+      setScore(score + pointsForMove);
       setGameState(randomFill(newGameState));
     }
-    return isValid;
   }
 
   function moveRight() {
     const newGameState = gameState.slice();
     let isValid = false;
+    let pointsForMove = 0;
     for (let rowIdx = 0; rowIdx < BOARD_DIM; rowIdx++) {
       let newIdx = BOARD_DIM - 1;
       for (let colIdx = BOARD_DIM - 1; colIdx > -1; colIdx--) {
@@ -70,7 +74,7 @@ export default function App() {
           if (newIdx < BOARD_DIM && newGameState[rowIdx][newIdx + 1] === val) { // merge
             newIdx++;
             val += val;
-            setScore(score + val);
+            pointsForMove += val
           }
           newGameState[rowIdx][newIdx] = val;
           if (newIdx !== colIdx) {
@@ -82,14 +86,16 @@ export default function App() {
       }
     }
     if (isValid) {
+      setPointsForMove(pointsForMove);
+      setScore(score + pointsForMove);
       setGameState(randomFill(newGameState));
     }
-    return isValid;
   }
 
   function moveUp() {
     const newGameState = gameState.slice();
     let isValid = false;
+    let pointsForMove = 0;
     for (let colIdx = 0; colIdx < BOARD_DIM; colIdx++) {
       let newIdx = 0;
       for (let rowIdx = 0; rowIdx < BOARD_DIM; rowIdx++) {
@@ -98,7 +104,7 @@ export default function App() {
           if (newIdx > 0 && newGameState[newIdx - 1][colIdx] === val) { // merge
             newIdx--;
             val += val;
-            setScore(score + val);
+            pointsForMove += val;
           }
           newGameState[newIdx][colIdx] = val;
           if (newIdx !== rowIdx) {
@@ -110,14 +116,16 @@ export default function App() {
       }
     }
     if (isValid) {
+      setPointsForMove(pointsForMove);
+      setScore(score + pointsForMove);
       setGameState(randomFill(newGameState));
     }
-    return isValid;
   }
 
   function moveDown() {
     const newGameState = gameState.slice();
     let isValid = false;
+    let pointsForMove = 0;
     for (let colIdx = 0; colIdx < BOARD_DIM; colIdx++) {
       let newIdx = BOARD_DIM - 1;
       for (let rowIdx = BOARD_DIM - 1; rowIdx > -1; rowIdx--) {
@@ -126,7 +134,7 @@ export default function App() {
           if (newIdx < BOARD_DIM - 1 && newGameState[newIdx + 1][colIdx] === val) { // merge
             newIdx++;
             val += val;
-            setScore(score + val);
+            pointsForMove += val;
           }
           newGameState[newIdx][colIdx] = val;
           if (newIdx !== rowIdx) {
@@ -138,12 +146,13 @@ export default function App() {
       }
     }
     if (isValid) {
+      setPointsForMove(pointsForMove);
+      setScore(score + pointsForMove);
       setGameState(randomFill(newGameState));
     }
-    return isValid;
   }
 
-  function isGameOver() {
+  function calcIsGameOver() {
     if (!gameState) {
       console.log(`isGameOver() is passed an invalid argument of: ${gameState}`);
       return true;
@@ -174,6 +183,7 @@ export default function App() {
   function handleResetClick() {
     setGameState(generateInitialGame(BOARD_DIM));
     setScore(0);
+    setPointsForMove(0);
     if (score > bestScore)
       setBestScore(score);
   }
@@ -183,10 +193,13 @@ export default function App() {
     return () => window.removeEventListener('keyup', handleKeyUp);
   });
 
+  const isGameOver = calcIsGameOver();
+
   return (
     <div className="game">
-      <Board gameState={gameState}></Board>
-      <Panel score={score} bestScore={bestScore} isGameOver={isGameOver()}
+      <Board gameState={gameState} isGameOver={isGameOver}></Board>
+      <Panel score={score} pointsForMove={pointsForMove} 
+        bestScore={bestScore} isGameOver={isGameOver}
         onResetClick={handleResetClick}>
       </Panel>
     </div>
