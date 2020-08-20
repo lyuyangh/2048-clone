@@ -12,8 +12,9 @@ const KEYCODE = {
 const BOARD_DIM = 4;
 
 export default function App() {
-  const [gameState, setGameState] = useState(generateInitialGame(BOARD_DIM));
-  const [score, setScore] = useState(0);
+  const [gameState, setGameState] = useLocalStorage('gameState', generateInitialGame(BOARD_DIM));
+  const [score, setScore] = useLocalStorage('score', 0);
+  const [bestScore, setBestScore] = useLocalStorage('bestScore', 0);
 
   function handleKeyUp(e) {
     switch (e.keyCode) {
@@ -142,9 +143,39 @@ export default function App() {
     return isValid;
   }
 
+  function isGameOver() {
+    if (!gameState) {
+      console.log(`isGameOver() is passed an invalid argument of: ${gameState}`);
+      return true;
+    }
+    // check if any square is empty or if two consecutive squares have the same number
+    for (let row of gameState) {
+      let prev = undefined;
+      for (let square of row) {
+        if (prev !== undefined && (!square || prev === square))
+          return false;
+        prev = square
+      }
+    }
+    for (let colIdx = 0; colIdx < BOARD_DIM; colIdx++) {
+      let prev = undefined;
+      for (let rowIdx = 0; rowIdx < BOARD_DIM; rowIdx++) {
+        const square = gameState[rowIdx][colIdx];
+        if (prev !== undefined && (!square || prev === square))
+          return false;
+        prev = square;
+      }
+    }
+    if (score > bestScore)
+      setBestScore(score);
+    return true;
+  }
+
   function handleResetClick() {
     setGameState(generateInitialGame(BOARD_DIM));
     setScore(0);
+    if (score > bestScore)
+      setBestScore(score);
   }
 
   useEffect(() => {
@@ -154,10 +185,10 @@ export default function App() {
 
   return (
     <div className="game">
-      <Panel score={score} isGameOver={isGameOver(gameState)}
+      <Board gameState={gameState}></Board>
+      <Panel score={score} bestScore={bestScore} isGameOver={isGameOver()}
         onResetClick={handleResetClick}>
       </Panel>
-      <Board gameState={gameState}></Board>
     </div>
   );
 }
@@ -171,7 +202,8 @@ function randomFill(gameState) {
   let newGameState = gameState.slice();
   const randomNum = Math.floor(Math.random() * (emptySquares.length));
   const [rowIdx, colIdx] = emptySquares[randomNum];
-  newGameState[rowIdx][colIdx] = 2; // TODO: provide a more complicated filling strategy
+  const randomNum2 = Math.random();
+  newGameState[rowIdx][colIdx] = randomNum2 > 0.8 ? 4 : 2; 
   return newGameState;
 }
 
@@ -195,14 +227,18 @@ function findEmptySquares(gameState) {
   return emptySquares;
 }
 
-function isGameOver(gameState) {
-  if (!gameState)
-    return true;
-  for (let row of gameState) {
-    for (let square of row) {
-      if (!square) 
-        return false;
+// Custom Hooks \\
+function useLocalStorage(key, initValue) {
+  const val = window.localStorage.getItem(key);
+  const [value, setValue] = useState(val ? JSON.parse(val) : initValue);
+
+  function setLocalStorageVal(val) {
+    setValue(val);
+    try {
+      window.localStorage.setItem(key, JSON.stringify(val));
+    } catch (e) {
+      console.log(e);
     }
   }
-  return true;
+  return [value, setLocalStorageVal];
 }

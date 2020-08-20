@@ -1,4 +1,5 @@
 # 2048 Clone (React)
+![UI](2048_UI.png "2048 UI")
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 

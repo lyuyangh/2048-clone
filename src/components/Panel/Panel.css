@@ -1,9 +1,63 @@
 .panel {
-    margin-bottom: 5px;
-    font-size: xx-large;
+    margin-left: 25px;
+}
+
+.title {
+    position: relative;
+    top: -15px;
+    font-size: 100px;
+    color: #492e08;
+}
+
+.scores-container {
     display: flex;
 }
 
-.reset-button {
-    margin-left: 20px;
+.score {
+    width: 120px;
+    height: 60px;
+    border-radius: 5px;
+    background-color: #c5a58b;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    margin: 5px;
 }
+
+.score .number {
+    font-size: 35px;
+}
+
+.game-rule {
+    margin-top: 10px;
+    margin-left: 5px;
+    width: 350px;
+}
+
+.reset-button {
+    position: relative;
+    top: 90px;
+    background-color: #4882ce;
+    height: 60px;
+    width: 140px;
+    line-height: 60px;
+    text-align: center;
+    color: aliceblue;
+    font-size: 20px;
+    font-weight: 450;
+    border-radius: 6px;
+}
+
+.reset-button:hover {
+    cursor: pointer;
+}
+
+.game-over {
+    background-color: #a0a2a5;
+}
+
+.game-over .game-over-text {display: inline;}
+.game-over .reset-text {display: none;}
+.game-over:hover .game-over-text {display: none;}
+.game-over:hover .reset-text {display: inline;}
